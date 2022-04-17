@@ -104,7 +104,16 @@ export class ApiClient {
 		}
 	}
 
-	async register(userdata) {
+	async loginOauthGoogle() {
+	  return true;
+	}
+
+  async loginOauthGithub() {
+    return true;
+  }
+
+
+  async register(userdata) {
 		const url = JWT_REGISTER;
 		try {
 			let response = await fetch(url, {

@@ -103,7 +103,23 @@ export default {
 			} else {
 				this.$router.push({name: 'home'});
 			}
-		}
+		},
+    async onGoogleLogin() {
+      try {
+        await this.apiClient.loginOauthGoogle();
+      } catch (e) {
+        this.error = "login failed";
+      }
+      return false;
+    },
+    async onGithubLogin() {
+      try {
+        await this.apiClient.loginOauthGithub();
+      } catch (e) {
+        this.error = "login failed";
+      }
+      return false;
+    }
 	}
 }
 </script>
