@@ -104,14 +104,17 @@ export default {
 				this.$router.push({name: 'home'});
 			}
 		},
-    async onGoogleLogin() {
+    onGoogleLogin() {
       try {
-        await this.apiClient.loginOauthGoogle();
+        /*let response = this.apiClient.loginOauthGoogle();
+        return  response;
+        redi*/
+        window.open("http://localhost:8088/jwt-auth/oauth/google", "_blank","popup,top=100,left=200,width=600,height=600");
       } catch (e) {
         this.error = "login failed";
       }
       return false;
-    },
+      },
     async onGithubLogin() {
       try {
         await this.apiClient.loginOauthGithub();

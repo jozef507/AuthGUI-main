@@ -8,6 +8,7 @@ const JWT_LOGIN = JWT_SERVER_ROOT + '/auth/login';
 const JWT_REGISTER = JWT_SERVER_ROOT + '/auth/register';
 const JWT_ADMIN = JWT_SERVER_ROOT + '/admin';
 const JWT_USER = JWT_SERVER_ROOT + '/user';
+const JWT_OAUTH_GOOGLE = JWT_SERVER_ROOT + '/oauth/google';
 
 
 export class ApiClient {
@@ -105,7 +106,17 @@ export class ApiClient {
 	}
 
 	async loginOauthGoogle() {
-	  return true;
+	  const url = JWT_OAUTH_GOOGLE;
+    try{
+      let response = await fetch(url, {
+        method: 'GET',
+        mode: 'no-cors'
+      });
+      const data = await response.json();
+      return response;
+    } catch (e) {
+      throw new Error(e);
+    }
 	}
 
   async loginOauthGithub() {
