@@ -27,7 +27,7 @@ export default {
 		return {
 			apiClient: null,
 			userInfo: null,
-			
+
 			menuItems: []
 		}
 	},
@@ -49,8 +49,14 @@ export default {
 		authFailed() {
 			this.$router.push({name: 'login'});
 		},
-		async loadUserInfo() {
-			this.userInfo = await this.apiClient.getUserInfo();
+		async loadUserInfo(flag) {
+			if(flag===0){
+        this.userInfo = await this.apiClient.getUserInfo();
+      } else if(flag===1){
+        this.userInfo = await this.apiClient.getOauthUserInfo();
+        this.userInfo.username = this.userInfo.email;
+      }
+
 		},
 		isAdmin() {
 			return this.userInfo && this.userInfo.roles && this.userInfo.roles.includes('admin');

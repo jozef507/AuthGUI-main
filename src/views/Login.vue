@@ -80,12 +80,15 @@ export default {
 		this.redirect = localStorage.getItem('redirect');
 		localStorage.removeItem('redirect');
 	},
+  watch: {
+
+  },
 	methods: {
 		async submitForm(ev) {
 			ev.preventDefault();
 			try {
 				await this.apiClient.login(this.userid, this.password);
-				await this.$root.loadUserInfo();
+				await this.$root.loadUserInfo(0);
 				this.error = null;
 				if (this.redirect) {
 					window.location.assign(this.redirect);
@@ -106,10 +109,7 @@ export default {
 		},
     onGoogleLogin() {
       try {
-        /*let response = this.apiClient.loginOauthGoogle();
-        return  response;
-        redi*/
-        window.open("http://localhost:8088/jwt-auth/oauth/google", "_blank","popup,top=100,left=200,width=600,height=600");
+        window.location.href = this.apiClient.getGoogleStart();
       } catch (e) {
         this.error = "login failed";
       }
@@ -117,7 +117,7 @@ export default {
       },
     async onGithubLogin() {
       try {
-        await this.apiClient.loginOauthGithub();
+        window.location.href = this.apiClient.getGithubStart();
       } catch (e) {
         this.error = "login failed";
       }
