@@ -5,6 +5,10 @@ const flhost = develMode ? 'http://localhost:8088' : ('https://' + window.locati
 //const JWT_SERVER_ROOT = 'http://localhost:8080/jwt-auth';
 const JWT_SERVER_ROOT = flhost + '/jwt-auth';
 const JWT_LOGIN = JWT_SERVER_ROOT + '/auth/login';
+const JWT_LOGIN_OAUTH_GOOGLE_FINISH = JWT_SERVER_ROOT + '/oauth/google-finish';
+const JWT_LOGIN_OAUTH_GOOGLE_START = JWT_SERVER_ROOT + '/oauth/google-start';
+const JWT_LOGIN_OAUTH_GITHUB_FINISH = JWT_SERVER_ROOT + '/oauth/github-finish';
+const JWT_LOGIN_OAUTH_GITHUB_START = JWT_SERVER_ROOT + '/oauth/github-start';
 const JWT_REGISTER = JWT_SERVER_ROOT + '/auth/register';
 const JWT_ADMIN = JWT_SERVER_ROOT + '/admin';
 const JWT_USER = JWT_SERVER_ROOT + '/user';
@@ -23,6 +27,14 @@ export class ApiClient {
 	logout() {
 		localStorage.removeItem('jwt');
 	}
+
+  getGoogleStart(){
+    return JWT_LOGIN_OAUTH_GOOGLE_START;
+  }
+
+  getGithubStart(){
+    return JWT_LOGIN_OAUTH_GITHUB_START;
+  }
 
 	checkAuth(response) {
 		if (response.status == 401 || response.status == 403) {
@@ -50,6 +62,17 @@ export class ApiClient {
 
 	async getUserInfo() {
 		const url = JWT_SERVER_ROOT + '/auth/userInfo';
+		let response = await fetch(url, {
+			method: 'GET',
+			headers: this.headers()
+		});
+		this.checkAuth(response);
+		const data = await response.json();
+		return data.param;
+	}
+
+	async getOauthUserInfo() {
+		const url = JWT_SERVER_ROOT + '/oauth/userInfo';
 		let response = await fetch(url, {
 			method: 'GET',
 			headers: this.headers()
@@ -104,7 +127,36 @@ export class ApiClient {
 		}
 	}
 
-	async register(userdata) {
+	async oauthLoginFinish(uuid,service) {
+		let url = null;
+    if(service==="google")
+      url = JWT_LOGIN_OAUTH_GOOGLE_FINISH;
+    else
+      url = JWT_LOGIN_OAUTH_GITHUB_FINISH;
+		try {
+			const udata = { oauthCredetnialsId: uuid };
+			let response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(udata)
+			});
+
+			const data = await response.json();
+			if (!response.ok) {
+				throw new Error(data.message);
+			}
+
+			const token = data.token;
+			this.storeToken(token);
+
+		} catch (e) {
+			throw new Error(e);
+		}
+	}
+
+  async register(userdata) {
 		const url = JWT_REGISTER;
 		try {
 			let response = await fetch(url, {

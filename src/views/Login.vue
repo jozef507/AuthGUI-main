@@ -24,12 +24,20 @@
 						<div class="error" v-if="error">
 							<InlineMessage severity="error">{{error}}</InlineMessage>
 						</div>
-						<div class="buttons">
-							<Button icon="pi pi-times" label="Cancel" class="p-button-secondary" @click="onCancel" />
-							<Button icon="pi pi-check" label="Login" type="submit" />
-						</div>
+            <div class="buttons-parrent">
+              <div class="buttons">
+                <Button icon="pi pi-times" label="Cancel" class="p-button-secondary" @click="onCancel" />
+                <Button icon="pi pi-check" label="Login" type="submit" />
+              </div>
+            </div>
 					</div>
 				</form>
+        <div  class="buttons-parrent">
+          <div class="oauth-buttons">
+            <Button icon="pi pi-google" label="Login with Google" class="p-button-secondary"  @click="onGoogleLogin" />
+            <Button icon="pi pi-github" label="Login with Github" class="p-button-secondary"  @click="onGithubLogin"/>
+          </div>
+        </div>
 			</template>
 			<template #footer>
 				<p><router-link to="/register">Register new user</router-link></p>
@@ -72,12 +80,15 @@ export default {
 		this.redirect = localStorage.getItem('redirect');
 		localStorage.removeItem('redirect');
 	},
+  watch: {
+
+  },
 	methods: {
 		async submitForm(ev) {
 			ev.preventDefault();
 			try {
 				await this.apiClient.login(this.userid, this.password);
-				await this.$root.loadUserInfo();
+				await this.$root.loadUserInfo(0);
 				this.error = null;
 				if (this.redirect) {
 					window.location.assign(this.redirect);
@@ -95,7 +106,23 @@ export default {
 			} else {
 				this.$router.push({name: 'home'});
 			}
-		}
+		},
+    onGoogleLogin() {
+      try {
+        window.location.href = this.apiClient.getGoogleStart();
+      } catch (e) {
+        this.error = "login failed";
+      }
+      return false;
+      },
+    async onGithubLogin() {
+      try {
+        window.location.href = this.apiClient.getGithubStart();
+      } catch (e) {
+        this.error = "login failed";
+      }
+      return false;
+    }
 	}
 }
 </script>
@@ -112,12 +139,27 @@ export default {
 .regform .form-content {
 	overflow: hidden;
 }
+.regform .buttons-parrent{
+  width:inherit;
+  overflow:auto;
+  margin-bottom: 1rem;
+}
 .regform .buttons {
 	float: right;
 }
 .regform .buttons .p-button {
 	width: auto;
 	margin-left: 0.5em;
+}
+.regform .oauth-buttons {
+	width: inherit;
+}
+.regform .oauth-buttons button{
+  margin-bottom: 0.5em;
+  color: #607D8B;
+  background: #ffffff;
+  border: 1px solid #607D8B;
+  width:100%;
 }
 .regform .error {
 	float: left;
@@ -127,6 +169,6 @@ export default {
 }
 .view-login .login-message {
 	font-weight: bold;
-	margin: 1.5em 0;	
+	margin: 1.5em 0;
 }
 </style>

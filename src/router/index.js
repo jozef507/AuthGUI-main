@@ -7,6 +7,7 @@ import RecoverPassword from "../views/RecoverPassword.vue";
 import ResetPassword from "../views/ResetPassword.vue";
 import AdminUsers from "../views/AdminUsers.vue";
 import AdminLog from "../views/AdminLog.vue";
+import OauthFinish from "../views/OauthFinish";
 
 const router = createRouter({
 	history: createWebHashHistory(),
@@ -50,7 +51,12 @@ const router = createRouter({
 			name: 'adminLog',
 			path: '/admin/log',
 			component: AdminLog
-		}
+		},
+    {
+      name: 'oauthFinisth',
+      path: '/oauth',
+      component: OauthFinish
+    }
 	]
 });
 

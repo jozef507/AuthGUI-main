@@ -34,7 +34,7 @@ export default {
 			this.items = [];
 			if (this.userInfo) {
 				this.items.push({
-					label: this.userInfo.username,
+          label: this.userInfo.username,
 					class: 'user-id',
 					to: '/profile'
 				});
